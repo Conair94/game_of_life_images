@@ -169,14 +169,14 @@ def main():
         '-w', '--width', 
         dest='width', 
         type=int, 
-        default=100,
+        default=200,
         help='Width of the output in pattern blocks (default: 100).'
     )
     parser.add_argument(
         '-f', '--frames',
         dest='frames',
         type=int,
-        default=100,
+        default=50,
         help='Number of frames (generations) to simulate (default: 100).'
     )
     parser.add_argument(
