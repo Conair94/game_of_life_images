@@ -143,7 +143,8 @@ def create_gol_animation(input_image_path, output_image_path, width_blocks, fram
         grid = compute_next_generation(grid)
 
     # Create boomerang effect
-    boomerang_frames = image_frames + image_frames[-2:0:-1]
+    #chop off the first element of the list
+    boomerang_frames = image_frames[1:] + image_frames[-2:0:-1]
 
     boomerang_frames[0].save(
         output_image_path,
@@ -169,14 +170,14 @@ def main():
         '-w', '--width', 
         dest='width', 
         type=int, 
-        default=200,
+        default=300,
         help='Width of the output in pattern blocks (default: 100).'
     )
     parser.add_argument(
         '-f', '--frames',
         dest='frames',
         type=int,
-        default=50,
+        default=100,
         help='Number of frames (generations) to simulate (default: 100).'
     )
     parser.add_argument(
