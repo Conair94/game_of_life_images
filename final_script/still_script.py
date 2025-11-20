@@ -18,52 +18,80 @@ import os
 from PIL import Image
 import numpy as np
 
-# A collection of 5x5 patterns, including oscillators and other dynamic forms,
+# A collection of 6x6 patterns, including oscillators, ordered by cell count
 # to create an interesting animation from a static image.
 PATTERNS = [
     # Level 0: Empty
-    np.zeros((5, 5), dtype=np.uint8),
-    # Level 1: Block (Still Life)
+    np.zeros((6, 6), dtype=np.uint8),
+    # Level 1: Blinker (Oscillator) size 3
     np.array([
-        [0, 0, 0, 0, 0],
-        [0, 1, 1, 0, 0],
-        [0, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0]
     ], dtype=np.uint8),
-    # Level 2: Blinker (Oscillator, period 2)
+    # Level 2: Block (Still Life) size 4
     np.array([
-        [0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0]
     ], dtype=np.uint8),
-    # Level 3: Toad (Oscillator, period 2)
+    # Level 3: Toad (Oscillator, period 2) size 6-6
     np.array([
-        [0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0],
-        [1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 0],
+        [0, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0]
     ], dtype=np.uint8),
-    # Level 4: Glider (Spaceship)
+    # Level 4: Beacon (Oscillator) size 6-8
     np.array([
-        [0, 0, 1, 0, 0],
-        [0, 0, 0, 1, 0],
-        [0, 1, 1, 1, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 0, 0, 0],
+        [0, 1, 1, 0, 0, 0],
+        [0, 0, 0, 1, 1, 0],
+        [0, 0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0]
     ], dtype=np.uint8),
-    # Level 5: Pulsar (Period 3) - just the core
+    # Level 5: Clock (Oscillator) size 6-6
     np.array([
-        [0, 0, 1, 1, 1],
-        [0, 0, 1, 1, 1],
-        [1, 1, 0, 1, 1],
-        [1, 1, 1, 0, 0],
-        [1, 1, 1, 0, 0]
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0],
+        [0, 1, 0, 1, 0, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0]
     ], dtype=np.uint8),
+    # Level 6: Long Ship (Still Life) size 8
+    np.array([
+        [0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 0, 0, 0],
+        [0, 1, 0, 1, 0, 0],
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0]
+    ], dtype=np.uint8),
+
+    #Level 6.5
+#    np.zeros((6, 6), dtype=np.uint8),
+
+        # Level 7: Figure 8 (Still Life) size 12
+#    np.array([
+#        [1, 1, 0, 0, 0, 0],
+#        [1, 1, 0, 1, 0, 0],
+#        [0, 0, 0, 0, 1, 0],
+#        [0, 1, 0, 0, 0, 0],
+#        [0, 0, 1, 0, 1, 1],
+#        [0, 0, 0, 0, 1, 1]
+#    ], dtype=np.uint8),
 ]
+PATTERNS = PATTERNS[::-1]
 
 def compute_next_generation(grid):
     """
@@ -144,7 +172,7 @@ def create_gol_animation(input_image_path, output_image_path, width_blocks, fram
 
     # Create boomerang effect
     #chop off the first element of the list
-    boomerang_frames = image_frames[1:] + image_frames[-2:0:-1]
+    boomerang_frames = image_frames[1:] + image_frames[-2:1:-1]
 
     boomerang_frames[0].save(
         output_image_path,
@@ -192,7 +220,7 @@ def main():
 
     if not args.output_image:
         file_name, _ = os.path.splitext(args.input_image)
-        args.output_image = f"{file_name}_gol_anim.gif"
+        args.output_image = f"{file_name}_gol_still_anim.gif"
 
     create_gol_animation(args.input_image, args.output_image, args.width, args.frames, args.duration)
 
